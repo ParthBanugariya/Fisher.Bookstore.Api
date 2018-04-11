@@ -15,8 +15,8 @@ namespace Fisher.Bookstore.Api.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Title = table.Column<string>(nullable: true),
-                    author = table.Column<string>(nullable: true)
+                    Bio = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,25 +29,36 @@ namespace Fisher.Bookstore.Api.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    ISBN = table.Column<string>(nullable: true),
+                    AuthorId = table.Column<int>(nullable: true),
+                    Isbn = table.Column<string>(nullable: true),
                     PublishDate = table.Column<DateTime>(nullable: false),
                     Publisher = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    author = table.Column<string>(nullable: true)
+                    Title = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Books_Authors_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Authors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_AuthorId",
+                table: "Books",
+                column: "AuthorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Authors");
+                name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Authors");
         }
     }
 }
